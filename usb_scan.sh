@@ -9,10 +9,9 @@ if [ -z "$USB_DRIVE" ]; then
     exit 1
 fi
 
-# Scan the USB drive for viruses and display a progress bar
-sudo -u $USER clamscan -r -i -l "$HOME/clamscan.log" "$USB_DRIVE" | pv -pterb -s $(sudo du -sb "$USB_DRIVE" | awk '{print $1}') > /dev/null
+# Run the virus scan and save the results to clamscan.log
+sudo -u $USER stdbuf -oL clamscan -r -i -v "$USB_DRIVE" 2>&1 | tee "$HOME/clamscan.log" | zenity --text-info --title="Scan Results" --width=800 --height=600 --auto-scroll
 
 # Show the scan results to the user
-SCAN_RESULT=$(cat "$HOME/clamscan.log")
 zenity --text-info --title="Scan Results" --width=800 --height=600 --filename="$HOME/clamscan.log"
 
