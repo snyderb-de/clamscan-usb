@@ -15,12 +15,12 @@ function Install-ClamAV {
     Expand-Archive -Path $outputPath -DestinationPath "$env:ProgramFiles\ClamAV"
 }
 
-function Check-ClamAVInstalled {
+function Test-ClamAVInstalled {
     Write-Host "Checking for ClamAV..."
     return (Get-Command "$env:ProgramFiles\ClamAV\clamscan.exe" -ErrorAction SilentlyContinue)
 }
 
-if (-not (Check-ClamAVInstalled)) {
+if (-not (Test-ClamAVInstalled)) {
     Install-ClamAV
 }
 

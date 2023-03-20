@@ -73,7 +73,7 @@ if ! is_clamav_installed; then
   if [[ "$answer" =~ [yY](es)* ]]; then
     install_dependencies
   else
-    echo "No? ... uh... alright, then."
+    echo "No? ... uh... alright then."
     exit 1
   fi
 fi
