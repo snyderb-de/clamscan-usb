@@ -1,5 +1,28 @@
 #!/bin/bash
 
+function check_python_and_tkinter() {
+
+  echo "Checking for Python 3 and Tkinter..."
+
+  if ! command -v python3 >/dev/null 2>&1; then
+    echo "Python 3 is required but not installed on your system."
+    echo "Please visit https://www.python.org/downloads/ to download and install Python 3."
+    exit 1
+  fi
+
+  if ! python3 -c "import tkinter" >/dev/null 2>&1; then
+    echo "Tkinter is required but not installed on your system."
+    echo "Please install Tkinter for Python 3. You can learn more at https://tkdocs.com/tutorial/install.html"
+    exit 1
+  fi
+
+  echo "Python 3 and Tkinter are installed. Proceeding with the script..."
+  sleep 3
+
+}
+
+check_python_and_tkinter
+
 function install_dependencies() {
   if command -v apt-get >/dev/null 2>&1; then
     PKG_MANAGER="apt-get"
