@@ -9,11 +9,14 @@ function Get-FolderPath($description) {
 
 function Install-ClamAV {
     Write-Host "Installing ClamAV for Windows..."
-    $clamavInstallerUrl = "https://www.clamav.net/downloads/production/clamav-0.103.3-win-x64-portable.zip"
+    $clamavDownloadPageUrl = "https://www.clamav.net/downloads"
+    $downloadPageContent = Invoke-WebRequest -Uri $clamavDownloadPageUrl
+    $clamavInstallerUrl = ($downloadPageContent -split "`n" -match 'production/clamav.*win-x64-portable\.zip')[0] -replace '.*="(.*)".*', '$1'
     $outputPath = "$env:TEMP\clamav.zip"
     Invoke-WebRequest -Uri $clamavInstallerUrl -OutFile $outputPath
     Expand-Archive -Path $outputPath -DestinationPath "$env:ProgramFiles\ClamAV"
 }
+
 
 function Test-ClamAVInstalled {
     Write-Host "Checking for ClamAV..."
