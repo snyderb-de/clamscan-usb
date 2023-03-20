@@ -1,5 +1,58 @@
 #!/bin/bash
 
+function install_dependencies() {
+  if command -v apt-get >/dev/null 2>&1; then
+    PKG_MANAGER="apt-get"
+  elif command -v yum >/dev/null 2>&1; then
+    PKG_MANAGER="yum"
+  elif command -v pacman >/dev/null 2>&1; then
+    PKG_MANAGER="pacman"
+  elif command -v dnf >/dev/null 2>&1; then
+    PKG_MANAGER="dnf"
+  elif command -v brew >/dev/null 2>&1; then
+    PKG_MANAGER="brew"
+  else
+    echo "We checked for APT, YUM, PACMAN, DNF, and BREW. A package manager not found. Please install ClamAV manually."
+    exit 1
+  fi
+
+  case $PKG_MANAGER in
+    apt-get)
+      sudo apt update && sudo apt install clamav && sudo freshclam
+      ;;
+    yum)
+      sudo yum install epel-release && sudo yum install clamav clamav-update && sudo freshclam
+      ;;
+    pacman)
+      sudo pacman -S clamav && sudo freshclam
+      ;;
+    dnf)
+      sudo dnf install -y clamav clamd clamav-update && sudo freshclam
+      ;;
+    brew)
+      brew install clamav && freshclam
+      ;;
+  esac
+}
+
+function is_clamav_installed() {
+    echo "Checking for ClamAV..."
+    sleep 3
+  command -v clamscan >/dev/null 2>&1
+}
+
+if ! is_clamav_installed; then
+  echo "The ClamAV package is required but is not installed."
+  read -rp "Do you want to install it now? [y/N] " answer
+  if [[ "$answer" =~ [yY](es)* ]]; then
+    install_dependencies
+  else
+    echo "No? ... uh... alright, then."
+    exit 1
+  fi
+fi
+
+
 # Check the operating system and set the folder and output variables accordingly
 if [[ "$(uname)" == "Darwin" ]]; then
   # macOS: Use AppleScript to get the folder and output paths
