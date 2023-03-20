@@ -27,6 +27,19 @@ if (-not (Test-ClamAVInstalled)) {
     Install-ClamAV
 }
 
+function Update-ClamAVDatabase {
+    Write-Host "Updating ClamAV virus database..."
+    $freshClamExe = "$env:ProgramFiles\ClamAV\freshclam.exe"
+    & $freshClamExe
+}
+
+# Ask the user if they want to update the ClamAV virus database
+$updateChoice = Read-Host "Do you want to update the ClamAV virus database before scanning? [y/N]"
+
+if ($updateChoice -eq "y" -or $updateChoice -eq "Y") {
+    Update-ClamAVDatabase
+}
+
 $folderToScan = Get-FolderPath "Select folder to scan"
 $logSaveLocation = Get-FolderPath "Select where to save log"
 
@@ -35,3 +48,4 @@ $arguments = @("-r", "-i", "-v", $folderToScan)
 $logFilePath = Join-Path -Path $logSaveLocation -ChildPath "clamscan.log"
 
 & $clamScanExe $arguments *>&1 | Tee-Object -FilePath $logFilePath
+
