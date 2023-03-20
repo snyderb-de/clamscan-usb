@@ -21,7 +21,10 @@ function check_python_and_tkinter() {
 
 }
 
-check_python_and_tkinter
+if [[ "$(uname)" != "Darwin" ]]; then
+  check_python_and_tkinter
+fi
+
 
 function install_dependencies() {
   if command -v apt-get >/dev/null 2>&1; then
